@@ -88,7 +88,7 @@ body {
 	visibility: visible;
 }
 .red {
-	color: #ff0101;
+	color: #ff3101;
 }
 .blue {
 	color: #318eff;
@@ -149,13 +149,17 @@ body {
 .about h2 {
 	margin: 0 0 0.4em;
 }
+.about h3 {
+	font-size: 1em;
+	margin-bottom: 1em;
+}
 .about p {
 	font-size: 0.8em;
 	line-height: 1.5;
 }
 .about a {
 	text-decoration: none;
-	color: #318eff;
+	color: #29b1ff;
 }
 
 
@@ -239,5 +243,5 @@ body {
 }
 .leaflet-clickable:active,
 .leaflet-clickable:focus {
-	opacity: 0.3;
+	opacity: 0.6;
 }

@@ -28,7 +28,7 @@ function showBusstopMap(slide) {
   var i = 0;
   var lang = UILang();
   var busstopList = getBusstopList();
-  var markerColor = (slide == "arr") ? "#318eff" : "#ff0101";
+  var markerColor = (slide == "arr") ? "#29b1ff" : "#ff3101";
   for (i = 0; i < busstopList[lang].length; i++) {
     var coordBusstop = new Array();
     coordBusstop[0] = parseFloat(busstopList[lang][i].x);
@@ -37,7 +37,7 @@ function showBusstopMap(slide) {
     var id = busstopList[lang][i].id;
     //red #ff0101
     //blue #318eff
-    L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickArr);
+    L.circleMarker(coordBusstop, {opacity : 1, radius : 10, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickArr);
    }
 }
   function onBusstopClickArr(el) {
@@ -69,11 +69,11 @@ function showBusstopMap(slide) {
 	}
 function drawPositon(coord) {
   var markerColor = "#00ff00";
-  var curr_pos = L.circleMarker(coord, {opacity : 1, radius : 20, color : markerColor, fillOpacity : 1, title : "Hello"}).addTo(markerGroup);
+  var curr_pos = L.circleMarker(coord, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : "Hello"}).addTo(markerGroup);
   map.fitBounds(curr_pos.getBounds());
 }
 function showLine(id) {
-  var markerColor = "#318eff";
+  var markerColor = "#29b1ff";
   var busstopList = getBusstopList()[UILang()];
   var el = getBusstopById(id);
   var coordBusstop = new Array ();
@@ -86,13 +86,13 @@ function showLine(id) {
 
           if (busstopList[j].id == id) {
             arrival = busstopList[j].name;
-            markerColor = "#ff0101";
-            L.circleMarker(coordBusstop, {opacity : 1, radius : 20, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickArr);
+            markerColor = "#ff3101";
+            L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickArr);
           }
           else {
-            markerColor = "#318eff";
+            markerColor = "#29b1ff";
 
-            L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : busstopList[j].id}).addTo(markerGroup).on('click', onBusstopClickDep);
+            L.circleMarker(coordBusstop, {opacity : 1, radius : 10, color : markerColor, fillOpacity : 1, title : busstopList[j].id}).addTo(markerGroup).on('click', onBusstopClickDep);
           }
 
         }
