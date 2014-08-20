@@ -1,0 +1,95 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html>
+<!--<![endif]-->
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-capable" content="yes"><meta name="viewport" content="width=device-width">
+	
+	<title>Warp</title>
+	<meta name="description" content="">
+
+	<!-- build:css styles/vendor.css -->
+	<link rel="stylesheet" href="lib/styles/leaflet.css">
+	<!-- bower:css -->
+	<!-- endbower -->
+	<!-- endbuild -->
+
+	<!-- build:css styles/main.css -->
+	<link rel="stylesheet" href="styles/main.css">
+	<!-- endbuild -->
+	<link rel="shortcut icon" href="/favicon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="touch-icon-144-precomposed.png">
+
+</head>
+
+<body>
+	
+	<header class="header-bar above-map">
+		<section class="">
+			<img class="btn menu-btn" src="images/menu.svg" onClick="showMenu()">
+			<img class="btn cancel-btn" src="images/cancel.svg" onClick="cancelQuery()">
+		</section>
+		<section class="top-msg zero" id="msg-des"> Tap anywhere on the map to set your <span class="red">destination</span>. </section>
+		<section class="top-msg right" style="display:none" id="msg-arr"> Tap on a bus stop to set your <span class="blue">departure</span> bus stop. </section>
+	</header>
+	
+	<div class="map-application">
+		<div id="map" class="map"></div>
+	</div>
+	
+	<section class="about hidden">
+		<h2 class="about-title">Warp</h2>
+		<h3>Public transport at light speed</h3>
+		<p>Designed and developed by <a href="http://juliansparber.com/">Julian Sparber</a> and <a href="http://tobiasbernard.com/">Tobias Bernard</a> at the 2014 AngelHack Bolzano Hackathon.</p>
+		
+		<p>Map data by <a href="http://www.openstreetmap.org/">Openstreetmap.org</a>, map tiles by <a href="http://maps.stamen.com/toner">Stamen Design</a>, bus data by <a href="http://sasabus.org/">SASAbus.org</a>.</p>
+		
+		<p>This application is <a href="http://www.gnu.org/philosophy/free-sw">Free Software</a> and subject to the terms of the <a href="http://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License</a>. Get the code on <a href="https://github.com/realnumbers/bus-now">Github</a>.</p>
+	</section>
+
+	<div class="view darken hidden" onClick="blurForeground()">
+		<section class="popup hidden" id="popup">
+			<!-- 
+			<h2 class="station-title" id="popup-title">Piazza Walther</h2>
+			<section class="arriving-bus">
+				<div class="bus-time">Now</div>
+				<span class="bus-line">7</span>
+			</section>
+			<section class="arriving-bus">
+				<div class="bus-time">4 min</div>
+				<span class="bus-line">5</span>
+			</section>
+			<section class="arriving-bus">
+				<span class="bus-time">6 min</span>
+				<span class="bus-line">10A</span>
+			</section>
+			<section class="arriving-bus">
+				<span class="bus-time">11 min</span>
+				<span class="bus-line">1</span>
+			</section>
+			-->
+		</section>
+	</div>
+
+	<!-- build:js scripts/vendor.js -->
+	<script src="lib/scripts/leaflet.js"></script>
+	<!-- bower:js -->
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/Velocity.js/jquery.velocity.js"></script>
+	<script src="bower_components/moment/min/moment.min.js"></script>
+	<!-- endbower -->
+	<!-- endbuild -->
+	<script src="bower_components/Velocity.js/jquery.velocity.min.js"></script>
+	<script src="scripts/layout.js"></script>
+	<!-- build:js scripts/main.js -->
+	<script src="scripts/main.js"></script>
+	<!-- endbuild -->
+</body>
+
+</html>
