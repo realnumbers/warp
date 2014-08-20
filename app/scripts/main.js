@@ -3,7 +3,7 @@
 
 //main stuff
 loadBusstopsList();
-loadBusstopsListPair(); 
+loadBusstopsListPair();
 var coord = new Array();
 var arrival;
 coord = [46.4928, 11.331];
@@ -46,16 +46,17 @@ function showBusstopMap(slide) {
     var id = el.target.options.title;
     switchToDep(id);
   }
-  
+
 	function onBusstopClickDep(el) {
 		console.log("Selected Arr");
 		console.log(el);
 		var id = el.target.options.title;
 		$(".top-msg").hide();
-		$(".header-bar").css("background-color", "rgba(255, 255, 255, 0)");
+		$(".info-bubble").css("background-color", "rgba(255, 255, 255, 0)");
 		$(".darken").removeClass("hidden");
 		$(".popup").removeClass("hidden");
-		
+		$(".info-bubble").addClass("hidden");
+
     getDepBusstop(id);
 	}
 
@@ -89,7 +90,7 @@ function showLine(id) {
             L.circleMarker(coordBusstop, {opacity : 1, radius : 20, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickArr);
           }
           else {
-            markerColor = "#318eff";						
+            markerColor = "#318eff";
 
             L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : busstopList[j].id}).addTo(markerGroup).on('click', onBusstopClickDep);
           }
@@ -102,7 +103,7 @@ function showLine(id) {
 
 function getBusstopById(id) {
   var busstopList = getBusstopList()[UILang()];
-  var found = false; 
+  var found = false;
   var i = 0;
   while (found == false) {
     if (busstopList[i].id == id)
@@ -115,8 +116,8 @@ function getBusstopById(id) {
 
 function matchBusstop(id) {
   var lang = UILang();
-  var pair = getBusstopPair()[lang]; 
-  var busstops = getBusstopList()[lang]; 
+  var pair = getBusstopPair()[lang];
+  var busstops = getBusstopList()[lang];
   var j;
   var found = false;
   j = 0;
@@ -170,7 +171,7 @@ function parseData(data, id) {
         console.log(tmpTime + " #####");
 				tmpTime = moment(tmpTime, "hhmmss").endOf().fromNow();
         var line = data.busTripStops[i].busTrip.busLineId;
-				$("	<section class='arriving-bus'><div class='bus-time'>" + tmpTime + 
+				$("	<section class='arriving-bus'><div class='bus-time'>" + tmpTime +
 					"</div><span class='bus-line'>" + line + "</span></section>").appendTo("#popup");
       }
     }
@@ -242,7 +243,8 @@ function showMenu() {
 	} else {
 		$(".about").removeClass("hidden");
 		$(".darken").removeClass("hidden");
-		$(".header-bar").css("background-color", "rgba(0, 0, 0, 0)");
+		$(".info-bubble").addClass("hidden");
+		$(".info-bubble").css("background-color", "rgba(0, 0, 0, 0)");
 	}
 }
 
@@ -250,14 +252,14 @@ function blurForeground() {
 	$(".about").addClass("hidden");
 	$(".darken").addClass("hidden");
 	$(".popup").addClass("hidden");
-	$(".header-bar").css("background-color", "rgba(0, 0, 0, 0.8)");
+	$(".info-bubble").css("background-color", "rgba(0, 0, 0, 0.8)");
 	$("#popup").empty();
 }
 
 function cancelQuery() {
   window.location.reload();
 }
-// Eliminates 300ms click delay on mobile 
+// Eliminates 300ms click delay on mobile
 function removeClickDelay() {
 	window.addEventListener('load', function() {
 			new FastClick(document.body);
@@ -285,4 +287,3 @@ function hideMsg() {
 		}
 	});
 }*/
-

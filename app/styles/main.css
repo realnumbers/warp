@@ -49,8 +49,11 @@ body {
 .header-bar {
 	width: 100%;
 	padding: .5em;
-	background-color: rgba(0, 0, 0, 0.8);
 	color: #fff;
+}
+.info-bubble {
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.8);
 }
 .btn {
 	margin-right: 0.5rem;
@@ -59,7 +62,7 @@ body {
 	cursor: pointer;
 }
 .menu-btn {
-	float: right;	
+	float: right;
 }
 .cancel-btn {
 	float: left;
@@ -141,7 +144,7 @@ body {
 
 .popup {
 	position: relative;
-	top: 2.5em;
+	top: 3em;
 	width: 100%;
 	padding: 0.8em 1.2em;
 	background-color: #fff;

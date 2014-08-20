@@ -9,43 +9,39 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="40.000027"
-   height="40.000027"
-   id="svg5603"
+   width="50.000015"
+   height="50.000015"
+   id="svg5160"
    version="1.1"
-   inkscape:version="0.48+devel r13318 custom"
-   viewBox="0 0 40.000026 40.000027"
-   sodipodi:docname="cancel.svg">
+   inkscape:version="0.48+devel r13447 custom"
+   viewBox="0 0 50.000014 50.000016"
+   sodipodi:docname="cancel2.svg">
   <defs
-     id="defs5605" />
+     id="defs5162" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#c1c1c1"
+     pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0"
+     inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="42.374352"
-     inkscape:cy="32.303714"
+     inkscape:zoom="0.7"
+     inkscape:cx="101.70144"
+     inkscape:cy="82.992764"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     fit-margin-top="-0.5"
+     inkscape:window-width="1500"
+     inkscape:window-height="846"
+     inkscape:window-x="1366"
+     inkscape:window-y="126"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1366"
-     inkscape:window-height="702"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1"
-     inkscape:snap-bbox="true"
-     inkscape:bbox-paths="true"
-     inkscape:bbox-nodes="true"
-     inkscape:snap-page="true" />
+     fit-margin-bottom="0" />
   <metadata
-     id="metadata5608">
+     id="metadata5165">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -60,22 +56,36 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(304.39443,-320.86942)">
+     transform="translate(-250.8571,-535.9336)">
     <g
-       id="g46425-2"
-       transform="translate(-3828.6804,-125.77841)">
-      <path
-         style="fill:none;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 3553.2882,475.65049 -18.0031,-18.0032"
-         id="path46427-4"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="cc" />
-      <path
-         sodipodi:nodetypes="cc"
-         inkscape:connector-curvature="0"
-         id="path46429-9"
-         d="m 3535.2838,475.65164 18.0056,-18.00549"
-         style="fill:none;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       id="g5697"
+       transform="translate(-4334.1429,-4771.4287)">
+      <circle
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.85;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="path5554"
+         cx="4610"
+         cy="5332.3623"
+         r="25.000008"
+         d="m 4635,5332.3623 a 25.000008,25.000008 0 0 1 -25,25 25.000008,25.000008 0 0 1 -25,-25 25.000008,25.000008 0 0 1 25,-25 25.000008,25.000008 0 0 1 25,25 z" />
+      <g
+         id="g5262"
+         transform="translate(1065.713,4865.7149)">
+        <g
+           id="g5266">
+          <path
+             sodipodi:nodetypes="cc"
+             inkscape:connector-curvature="0"
+             id="path5268"
+             d="m 3552.2882,474.65049 -16.0031,-16.0032"
+             style="fill:none;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          <path
+             style="fill:none;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             d="m 3536.2838,474.65164 16.0056,-16.00549"
+             id="path5270"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="cc" />
+        </g>
+      </g>
     </g>
   </g>
 </svg>
