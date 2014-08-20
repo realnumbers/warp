@@ -48,18 +48,24 @@ body {
 
 .header-bar {
 	width: 100%;
-	padding: .5em;
+	padding: 0.5em;
 	color: #fff;
+	pointer-events: none;
+}
+.header-bar * {
+	pointer-events: auto;
 }
 .info-bubble {
 	bottom: 0;
 	background-color: rgba(0, 0, 0, 0.8);
 }
 .btn {
-	margin-right: 0.5rem;
 	visibility: visible;
 	font-size: 2em;
 	cursor: pointer;
+}
+.btn:active, .btn:focus {
+	opacity: 0.8;
 }
 .menu-btn {
 	float: right;
@@ -119,11 +125,23 @@ body {
 .about {
 	position: absolute;
 	top: 0;
-	padding: 1em 1.7em 1.7em;
+	right: 0;
+	padding: 1em 1.3em 1.3em;
 	margin: 3.5em 6%;
 	background-color: rgba(0, 0, 0, 0.89);
 	color: #fff;
 	z-index: 100000;
+	border-radius: 50px;
+}
+@media screen and (min-width: 700px) {
+	.about {
+		margin: 3.5em 8em;
+	}
+}
+@media screen and (min-width: 900px) {
+	.about {
+		margin: 3.5em 3.5em 0 60%;
+	}
 }
 .about * {
 	margin-bottom: 0.8em;
@@ -132,7 +150,8 @@ body {
 	margin: 0 0 0.4em;
 }
 .about p {
-	font-size: 0.9em;
+	font-size: 0.8em;
+	line-height: 1.5;
 }
 .about a {
 	text-decoration: none;
@@ -217,4 +236,8 @@ body {
 	color: green !important;
 	position: relative;
 	z-index: 10000000000 !important;
+}
+.leaflet-clickable:active,
+.leaflet-clickable:focus {
+	opacity: 0.3;
 }
