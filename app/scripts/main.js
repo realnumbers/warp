@@ -200,7 +200,6 @@ function currentPosition() {
     function success(position) {
       coord[0] = position.coords.latitude;
       coord[1] = position.coords.longitude;
-      alert("Found Positon");
       drawPositon(coord);
     };
     function error() {
