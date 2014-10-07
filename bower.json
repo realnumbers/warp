@@ -2,7 +2,7 @@
   "name": "warp",
   "version": "0.0.0",
   "dependencies": {
-
+		"moment": "~2.8.3",
   	"jquery": "~2.1.0",
     "fastclick": "~1.0.1"
   }
