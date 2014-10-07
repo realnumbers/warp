@@ -47,6 +47,13 @@ function showBusstopMap(slide) {
     switchToDep(id);
   }
 
+	function onBusstopClickUnselect(el) {
+		console.log("Unselected Destination");
+		console.log(el);
+		var id = el.target.options.title;
+		switchToDep(id);
+	}
+
 	function onBusstopClickDep(el) {
 		console.log("Selected Arr");
 		console.log(el);
