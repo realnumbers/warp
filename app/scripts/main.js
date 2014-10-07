@@ -151,13 +151,16 @@ function getDepBusstop(id) {
   var idPair = matchBusstop(id);
   var time = moment().format('YYYYMMDDhhmm');
   time = "201405131550";
-  var urlAPI = "http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId="+ idPair + "&yyyymmddhhmm=" + time;
+  //var urlAPI = "http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId="+ idPair + "&yyyymmddhhmm=" + time;
+	id = id.split(":")[1];
+	console.log(id);
+	var urlAPI = "http://sasa.sparber.net/stationboard?ORT_NR=" + id  + "&type=json";
   $.ajax({
         url: urlAPI,
         dataType: 'jsonp',
         success: function( data ) {
           console.log("success");
-          parseData(data, id);
+					writeStationBoard(data, id);
             },
         error: function( data ) {
         console.log("Error");
@@ -165,24 +168,21 @@ function getDepBusstop(id) {
     });
 
 }
-function parseData(data, id) {
-  console.log(data);
-  var depTime = new Array();
+function writeStationBoard(data, id) {
+	console.log(data);
+	var depTime = new Array();
 	$("#popup").empty();
-	$("<h2 class='station-title' id='popup-title'> <span class='blue'>" + getBusstopById(id).name + "</span> → <span class='red'>" + arrival + "</span></h2>").appendTo("#popup");
-  for (var i = 0; i < data.busTripStops.length; i++) {
-    for (var j = 0; j < data.busTripStops[i].busTrip.busTripStop.length; j++) {
-      if (id == (":" + data.busTripStops[i].busTrip.busTripStop[j].busStopId + ":")) {
-        var  tmpTime = data.busTripStops[i].busTrip.busTripStop[j].timeHHMMSS.toString();
-        tmpTime = (tmpTime.length < 6) ? "0" + tmpTime : tmpTime;
-        console.log(tmpTime + " #####");
-				tmpTime = moment(tmpTime, "hhmmss").endOf().fromNow();
-        var line = data.busTripStops[i].busTrip.busLineId;
-				$("	<section class='arriving-bus'><div class='bus-time'>" + tmpTime +
-					"</div><span class='bus-line'>" + line + "</span></section>").appendTo("#popup");
-      }
-    }
-  }
+	$("<h2 class='station-title' id='popup-title'> <span class='blue'>" + data[0].stationname + "</span> → <span class='red'>" + arrival + "</span></h2>").appendTo("#popup");
+
+	for (var i = 0; i < data.length && i < 5; i++) {
+		var tmpTime = data[i].arrival;
+
+		console.log(tmpTime + " #####");
+		tmpTime = moment(tmpTime, "hhmmss").endOf().fromNow();
+		//var line = data.busTripStops[i].busTrip.busLineId;
+		$("	<section class='arriving-bus'><div class='bus-time'>" + tmpTime +
+				"</div><span class='bus-line'>" + data[i].lidname + "</span></section>").appendTo("#popup");
+	}
 
 }
 // return the busstop list as json witch is saved in the localStorage
@@ -190,7 +190,7 @@ function getBusstopList() {
 	return JSON.parse(localStorage.busstops);
 }
 function getBusstopPair() {
-  return JSON.parse(localStorage.busstopsPair);
+	return JSON.parse(localStorage.busstopsPair);
 }
 
 function UILang() {
@@ -200,29 +200,29 @@ function UILang() {
 }
 
 function currentPosition() {
-  if (!navigator.geolocation){
-    error();
-  }
-  else {
-    function success(position) {
-      coord[0] = position.coords.latitude;
-      coord[1] = position.coords.longitude;
-      drawPositon(coord);
-    };
-    function error() {
-      console.log("Unable to retrieve your location, use default position");
-    };
+	if (!navigator.geolocation){
+		error();
+	}
+	else {
+		function success(position) {
+			coord[0] = position.coords.latitude;
+			coord[1] = position.coords.longitude;
+			drawPositon(coord);
+		};
+		function error() {
+			console.log("Unable to retrieve your location, use default position");
+		};
 
-    navigator.geolocation.getCurrentPosition(success, error);
-  }
+		navigator.geolocation.getCurrentPosition(success, error);
+	}
 }
 
 function loadBusstopsList() {
 	if (!localStorage.busstops) {
 		$.getJSON("data/busstops.json", function (data) {
-			localStorage.setItem('busstops', JSON.stringify(data));
-      window.location.reload();
-		});
+				localStorage.setItem('busstops', JSON.stringify(data));
+				window.location.reload();
+				});
 	}
 }
 
@@ -233,14 +233,14 @@ function hideDesMsg() {
 }
 function showArrMsg() {
 	console.log("show arr")
-	$("#msg-arr").removeClass("right").addClass("zero");
+		$("#msg-arr").removeClass("right").addClass("zero");
 }
 function loadBusstopsListPair() {
-  if (!localStorage.busstopsPair){
-  $.getJSON( "data/busstops_pair.json", function(data) {
-    localStorage.setItem('busstopsPair', JSON.stringify(data));
-  });
-  }
+	if (!localStorage.busstopsPair){
+		$.getJSON( "data/busstops_pair.json", function(data) {
+				localStorage.setItem('busstopsPair', JSON.stringify(data));
+				});
+	}
 }
 
 function showMenu() {
@@ -263,7 +263,7 @@ function blurForeground() {
 }
 
 function cancelQuery() {
-  window.location.reload();
+	window.location.reload();
 }
 // Eliminates 300ms click delay on mobile
 function removeClickDelay() {
@@ -273,7 +273,7 @@ function removeClickDelay() {
 }
 
 /*
-function hideMsg() {
+	 function hideMsg() {
 	console.log("hide msg")
 	$(".ui").velocity({
 		scaleX: 1,
