@@ -154,10 +154,13 @@ function getDepBusstop(id) {
   //var urlAPI = "http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId="+ idPair + "&yyyymmddhhmm=" + time;
 	id = id.split(":")[1];
 	console.log(id);
-	var urlAPI = "http://sasa.sparber.net/stationboard?ORT_NR=" + id  + "&type=json";
+	//var urlAPI = "http://sasa.sparber.net/stationboard?ORT_NR=" + id  + "&type=json";
+	var urlAPI = "http://stationboard.opensasa.info/?ORT_NR="+ id + "&type=jsonp";
+	console.log(urlAPI);
   $.ajax({
         url: urlAPI,
         dataType: 'jsonp',
+				jsonp: 'JSONP',
         success: function( data ) {
           console.log("success");
 					writeStationBoard(data, id);
@@ -168,6 +171,9 @@ function getDepBusstop(id) {
     });
 
 }
+function callback(data) {
+	console.log(data);
+	}
 function writeStationBoard(data, id) {
 	console.log(data);
 	var depTime = new Array();
