@@ -37,8 +37,8 @@
 	</header>
 
 	<footer class="info-bubble header-bar above-map">
-		<section class="top-msg zero" id="msg-des"> Tap anywhere on the map to set your <span class="red">destination</span>. </section>
-		<section class="top-msg right" style="display:none" id="msg-arr"> Tap on a bus stop to set your <span class="blue">departure</span> bus stop. </section>
+		<section class="top-msg zero" id="msg-destin"> Tap anywhere on the map to set your <span class="red">destination</span>. </section>
+		<section class="top-msg right" style="display:none" id="msg-depart"> Tap on a bus stop to set your <span class="blue">departure</span> bus stop. </section>
 	</footer>
 	<div class="map-application">
 		<div id="map" class="map"></div>
@@ -56,6 +56,11 @@
 
 	<div class="view darken hidden" onClick="blurForeground()">
 		<section class="popup hidden" id="popup">
+			<!--
+			<div class="spinner-container">
+				<img class="spinner" src="images/spinner.svg">
+			</div>
+			-->
 			<!--
 			<h2 class="station-title" id="popup-title">Piazza Walther</h2>
 			<section class="arriving-bus">
@@ -87,7 +92,6 @@
 	<!-- endbower -->
 	<!-- endbuild -->
 	<script src="bower_components/Velocity.js/jquery.velocity.min.js"></script>
-	<script src="scripts/layout.js"></script>
 	<!-- build:js scripts/main.js -->
 	<script src="scripts/main.js"></script>
 	<!-- endbuild -->

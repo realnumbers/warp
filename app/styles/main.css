@@ -172,7 +172,10 @@ body {
 
 .popup {
 	position: relative;
-	top: 3em;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+	/*top: 3em;*/
 	width: 100%;
 	padding: 0.8em 1.2em;
 	background-color: #fff;
@@ -197,6 +200,24 @@ body {
 		padding: 2.6em;
 	}
 }
+@keyframes spin {
+	from { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+	to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+	from { -webkit-transform: rotate(0deg); }
+	to { -webkit-transform: rotate(360deg); }
+}
+.spinner {
+	width: 100%;
+	animation: spin 1s infinite linear;
+	-webkit-animation: spin 1s infinite linear;
+}
+.spinner-container {
+	width: 6em;
+	margin: 3em auto;
+}
+
 .triangle {
 	position: absolute;
 	bottom: 0;
@@ -233,7 +254,7 @@ body {
 .leaflet-control, .leaflet-control-attribution {
 	display: none;
 }
-#msg-arr {
+#msg-depart {
 	margin-top: -2.95em;
 }
 * {

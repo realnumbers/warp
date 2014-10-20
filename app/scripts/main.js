@@ -1,7 +1,8 @@
 /*jslint browser: true*/
 /*global L */
 
-//main stuff
+// LOAD BUSSTOPS FROM FILE AND RENDER MAP
+
 loadBusstopsList();
 loadBusstopsListPair();
 var coord = new Array();
@@ -15,71 +16,82 @@ currentPosition();
 		zoom: 16
 	});
 
-	/* add default stamen tile layer */
-	L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
-		minZoom: 12,
-		maxZoom: 18,
-		attribution: 'Map data © <a href="http://www.openstreetmap.org">OpenStreetMap contributors</a>'
-	}).addTo(map);
-  var markerGroup = new L.LayerGroup().addTo(map);
-	showBusstopMap();
+/* add default stamen tile layer */
+L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
+	minZoom: 12,
+	maxZoom: 18,
+	attribution: 'Map data © <a href="http://www.openstreetmap.org">OpenStreetMap contributors</a>'
+}).addTo(map);
+var markerGroup = new L.LayerGroup().addTo(map);
+showBusstopMap();
 
-function showBusstopMap(slide) {
-  var i = 0;
-  var lang = UILang();
-  var busstopList = getBusstopList();
-  var markerColor = (slide == "arr") ? "#29b1ff" : "#ff3101";
-  for (i = 0; i < busstopList[lang].length; i++) {
-    var coordBusstop = new Array();
-    coordBusstop[0] = parseFloat(busstopList[lang][i].x);
-    coordBusstop[1] = parseFloat(busstopList[lang][i].y);
-    var thisLine = busstopList[lang][i].line;
-    var id = busstopList[lang][i].id;
-    //red #ff0101
-    //blue #318eff
-    L.circleMarker(coordBusstop, {opacity : 1, radius : 10, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickArr);
-   }
+// MAP USER INTERACTIONS
+
+// First click: Select destination
+function onBusstopClickSelectDestin(el) {
+  console.log("Selected Destination");
+  console.log(el);
+  var id = el.target.options.title;
+  switchToDepart(id);
 }
-  function onBusstopClickArr(el) {
-    console.log("Selected Destination");
-    console.log(el);
-    var id = el.target.options.title;
-    switchToDep(id);
-  }
 
-	function onBusstopClickUnselect(el) {
-		console.log("Unselected Destination");
-		console.log(el);
-		var id = el.target.options.title;
-		switchToDep(id);
+// Second click: Unselect destination
+function onBusstopClickUnselectDestin(el) {
+	console.log("Unselected Destination");
+	console.log(el);
+	var id = el.target.options.title;
+	switchToDestin(id);
+}
+
+// Second click: Select departure
+function onBusstopClickDep(el) {
+	console.log("Selected Arr");
+	console.log(el);
+	var id = el.target.options.title;
+
+	// Add Spinner to bubble
+	$("#popup").empty();
+	$("<div class='spinner-container'><img class='spinner' src='images/spinner.svg'></div>").appendTo("#popup");
+
+	// Show bubble
+	$(".top-msg").hide();
+	$(".info-bubble").css("background-color", "rgba(255, 255, 255, 0)");
+	$(".darken").removeClass("hidden");
+	$(".popup").removeClass("hidden");
+	$(".info-bubble").addClass("hidden");
+
+  getDepBusstop(id);
+}
+
+// UI RENDERING FUNCTIONS
+
+// Draw all busstops
+function showBusstopMap(slide) {
+	var i = 0;
+	var lang = UILang();
+	var busstopList = getBusstopList();
+	var markerColor = (slide == "arr") ? "#29b1ff" : "#ff3101";
+	for (i = 0; i < busstopList[lang].length; i++) {
+		var coordBusstop = new Array();
+		coordBusstop[0] = parseFloat(busstopList[lang][i].x);
+		coordBusstop[1] = parseFloat(busstopList[lang][i].y);
+		var thisLine = busstopList[lang][i].line;
+		var id = busstopList[lang][i].id;
+		//red #ff0101
+		//blue #318eff
+		L.circleMarker(coordBusstop, {opacity : 1, radius : 10, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickSelectDestin);
 	}
+}
 
-	function onBusstopClickDep(el) {
-		console.log("Selected Arr");
-		console.log(el);
-		var id = el.target.options.title;
-		$(".top-msg").hide();
-		$(".info-bubble").css("background-color", "rgba(255, 255, 255, 0)");
-		$(".darken").removeClass("hidden");
-		$(".popup").removeClass("hidden");
-		$(".info-bubble").addClass("hidden");
-
-    getDepBusstop(id);
-	}
-
-	function switchToDep(id) {
-		$("#msg-arr").show(0);
-		hideDesMsg();
-		showArrMsg();
-		markerGroup.clearLayers();
-		showLine(id);
-	}
+// Draw user position
 function drawPositon(coord) {
   var markerColor = "#00ff00";
   var curr_pos = L.circleMarker(coord, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : "Hello"}).addTo(markerGroup);
   map.fitBounds(curr_pos.getBounds());
 }
-function showLine(id) {
+
+// Draw all busstops connected to the chosen destination
+function drawLine(id) {
   var markerColor = "#29b1ff";
   var busstopList = getBusstopList()[UILang()];
   var el = getBusstopById(id);
@@ -94,7 +106,7 @@ function showLine(id) {
           if (busstopList[j].id == id) {
             arrival = busstopList[j].name;
             markerColor = "#ff3101";
-            L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickArr);
+            L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickUnselectDestin);
           }
           else {
             markerColor = "#29b1ff";
@@ -107,6 +119,41 @@ function showLine(id) {
     }
   }
 }
+
+function writeStationBoard(data, id) {
+	console.log(data);
+	var depTime = new Array();
+	$("#popup").empty();
+	$("<h2 class='station-title' id='popup-title'> <span class='blue'>" + data[0].stationname.split(" - ")[0] + "</span> → <span class='red'>" + arrival.split("-")[0] + "</span></h2>").appendTo("#popup");
+
+	for (var i = 0; i < data.length && i < 5; i++) {
+		var tmpTime = data[i].arrival;
+
+		console.log(tmpTime + " #####");
+		tmpTime = moment(tmpTime, "hhmmss").endOf().fromNow();
+		//var line = data.busTripStops[i].busTrip.busLineId;
+		$("	<section class='arriving-bus'><div class='bus-time'>" + tmpTime +
+				"</div><span class='bus-line'>" + data[i].lidname + "</span></section>").appendTo("#popup");
+	}
+}
+
+function switchToDepart(id) {
+	$("#msg-depart").show(0);
+	hideDestinMsg();
+	showDepartMsg();
+	markerGroup.clearLayers();
+	drawLine(id);
+}
+
+function switchToDestin() {
+	$("#msg-destin").show(0);
+	hideDestinMsg();
+	showDepartMsg();
+	markerGroup.clearLayers();
+	showBusstopMap();
+}
+
+// DATA FUNCTIONS
 
 function getBusstopById(id) {
   var busstopList = getBusstopList()[UILang()];
@@ -141,16 +188,10 @@ function matchBusstop(id) {
   return id;
 }
 
-
-function checkLine() {
-  return true;
-}
-
-function getDepBusstop(id) {
-  //http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId=:5142:&yyyymmddhhmm=201309160911&callback=function123
+function getDepBusstop(id) {  //http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId=:5142:&yyyymmddhhmm=201309160911&callback=function123
   var idPair = matchBusstop(id);
   var time = moment().format('YYYYMMDDhhmm');
-  time = "201405131550";
+  //time = "201405131550";
   //var urlAPI = "http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId="+ idPair + "&yyyymmddhhmm=" + time;
 	id = id.split(":")[1];
 	console.log(id);
@@ -164,34 +205,15 @@ function getDepBusstop(id) {
         success: function( data ) {
           console.log("success");
 					writeStationBoard(data, id);
-            },
+          },
         error: function( data ) {
         console.log("Error");
         }
     });
 
 }
-function callback(data) {
-	console.log(data);
-	}
-function writeStationBoard(data, id) {
-	console.log(data);
-	var depTime = new Array();
-	$("#popup").empty();
-	$("<h2 class='station-title' id='popup-title'> <span class='blue'>" + data[0].stationname + "</span> → <span class='red'>" + arrival + "</span></h2>").appendTo("#popup");
 
-	for (var i = 0; i < data.length && i < 5; i++) {
-		var tmpTime = data[i].arrival;
-
-		console.log(tmpTime + " #####");
-		tmpTime = moment(tmpTime, "hhmmss").endOf().fromNow();
-		//var line = data.busTripStops[i].busTrip.busLineId;
-		$("	<section class='arriving-bus'><div class='bus-time'>" + tmpTime +
-				"</div><span class='bus-line'>" + data[i].lidname + "</span></section>").appendTo("#popup");
-	}
-
-}
-// return the busstop list as json witch is saved in the localStorage
+// Return the busstop list as json which is stored in the localStorage
 function getBusstopList() {
 	return JSON.parse(localStorage.busstops);
 }
@@ -216,9 +238,8 @@ function currentPosition() {
 			drawPositon(coord);
 		};
 		function error() {
-			console.log("Unable to retrieve your location, use default position");
+			console.log("Unable to retrieve your location, using default position");
 		};
-
 		navigator.geolocation.getCurrentPosition(success, error);
 	}
 }
@@ -232,21 +253,32 @@ function loadBusstopsList() {
 	}
 }
 
-function hideDesMsg() {
-	console.log("hide des");
-	$("#msg-des").removeClass("zero").addClass("left");
-	//showArrMsg();
-}
-function showArrMsg() {
-	console.log("show arr")
-		$("#msg-arr").removeClass("right").addClass("zero");
-}
 function loadBusstopsListPair() {
 	if (!localStorage.busstopsPair){
 		$.getJSON( "data/busstops_pair.json", function(data) {
 				localStorage.setItem('busstopsPair', JSON.stringify(data));
 				});
 	}
+}
+
+// MESSAGES & POPUP
+
+function showDestinMsg() {
+	console.log("show destination msg");
+	$("#msg-destin").removeClass("left").addClass("zero");
+}
+function hideDestinMsg() {
+	console.log("hide destination msg");
+	$("#msg-destin").removeClass("zero").addClass("left");
+}
+
+function showDepartMsg() {
+	console.log("show departure msg")
+		$("#msg-depart").removeClass("right").addClass("zero");
+}
+function hideDepartMsg() {
+	console.log("hide departure msg")
+		$("#msg-depart").removeClass("zero").addClass("right");
 }
 
 function showMenu() {
@@ -271,11 +303,18 @@ function blurForeground() {
 function cancelQuery() {
 	window.location.reload();
 }
+
+// UTILITIES
+
 // Eliminates 300ms click delay on mobile
 function removeClickDelay() {
 	window.addEventListener('load', function() {
 			new FastClick(document.body);
 			}, false);
+}
+
+function callback(data) {
+	console.log(data);
 }
 
 /*
