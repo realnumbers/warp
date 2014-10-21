@@ -33,13 +33,14 @@
 
 	<header class="top-bar header-bar above-map">
 		<img class="btn menu-btn" src="images/menu.svg" onClick="showMenu()">
-		<img class="btn cancel-btn" src="images/cancel.svg" onClick="cancelQuery()">
+		<img class="btn cancel-btn" src="images/cancel.svg" onClick="switchToDestin()">
 	</header>
 
 	<footer class="info-bubble header-bar above-map">
-		<section class="top-msg zero" id="msg-destin"> Tap anywhere on the map to set your <span class="red">destination</span>. </section>
+		<section class="top-msg zero" id="msg-destin"> Tap on a bus stop to set your <span class="red">destination</span>. </section>
 		<section class="top-msg right" style="display:none" id="msg-depart"> Tap on a bus stop to set your <span class="blue">departure</span> bus stop. </section>
 	</footer>
+
 	<div class="map-application">
 		<div id="map" class="map"></div>
 	</div>
@@ -56,31 +57,50 @@
 
 	<div class="view darken hidden" onClick="blurForeground()">
 		<section class="popup hidden" id="popup">
-			<!--
-			<div class="spinner-container">
-				<img class="spinner" src="images/spinner.svg">
-			</div>
-			-->
-			<!--
-			<h2 class="station-title" id="popup-title">Piazza Walther</h2>
+
+		</section>
+
+
+<!--
+		<section class="popup" id="popup">
+
+			<h2 class="popup-title" id="popup-title">Piazza Walther</h2>
 			<section class="arriving-bus">
 				<div class="bus-time">Now</div>
-				<span class="bus-line">7</span>
+				<span class="bus-line-container">
+					<span class="bus-line">7</span>
+					<span class="bus-line-endstation"> Firmian</span>
+				</span>
+				<span class="destin-time">09:30</span>
 			</section>
 			<section class="arriving-bus">
 				<div class="bus-time">4 min</div>
-				<span class="bus-line">5</span>
+				<span class="bus-line-container">
+					<span class="bus-line">5</span>
+					<span class="bus-line-endstation"> Stazione</span>
+				</span>
+				<span class="destin-time">09:34</span>
 			</section>
 			<section class="arriving-bus">
 				<span class="bus-time">6 min</span>
-				<span class="bus-line">10A</span>
+				<span class="bus-line-container">
+					<span class="bus-line">10A</span>
+					<span class="bus-line-endstation"> Via Fago</span>
+				</span>
+				<span class="destin-time">09:41</span>
 			</section>
 			<section class="arriving-bus">
 				<span class="bus-time">11 min</span>
-				<span class="bus-line">1</span>
+				<span class="bus-line-container">
+					<span class="bus-line">1</span>
+					<span class="bus-line-endstation"> Via Perathoner</span>
+				</span>
+				<span class="destin-time">09:39</span>
 			</section>
-			-->
+
 		</section>
+-->
+
 	</div>
 
 	<!-- build:js scripts/vendor.js -->

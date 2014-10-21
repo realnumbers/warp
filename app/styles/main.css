@@ -38,7 +38,7 @@ body {
 	background-color: #fff;
 }
 .view {
-	padding: 0.7em 1em;
+	padding: 0.7em 0.5em;
 }
 .above-map {
 	position: absolute;
@@ -177,10 +177,10 @@ body {
 	transform: translateY(-50%);
 	/*top: 3em;*/
 	width: 100%;
-	padding: 0.8em 1.2em;
+	padding: 0.8em 1em;
 	background-color: #fff;
 }
-@media screen and (min-width: 500px) {
+@media screen and (min-width: 400px) {
 	.popup {
 		width: 80%;
 		left: 10%;
@@ -190,14 +190,22 @@ body {
 	.popup {
 		width: 60%;
 		left: 20%;
-		padding: 2em;
+		padding: 1.8em 2em;
 	}
 }
 @media screen and (min-width: 800px) {
 	.popup {
 		width: 50%;
 		left: 25%;
-		padding: 2.6em;
+		padding: 2.2em 2.6em;
+	}
+}
+@media screen and (min-width: 1000px) {
+	.popup {
+		width: 500px;
+		left: 50%;
+		-webkit-transform: translateX(-50%) translateY(-50%);
+		transform: translateX(-50%) translateY(-50%);
 	}
 }
 @keyframes spin {
@@ -218,6 +226,11 @@ body {
 	margin: 3em auto;
 }
 
+.arrow {
+	font-size: 0.7em;
+	vertical-align: 0.2em;
+	margin: 0 0.6em;
+}
 .triangle {
 	position: absolute;
 	bottom: 0;
@@ -226,28 +239,57 @@ body {
 }
 .details {}
 .arriving-bus {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-justify-content: space-in-between;
+	justify-content: space-in-between;
 	margin-bottom: 0.6em;
 }
-.station-title {
-	margin-bottom: 0.5em;
-	font-size: 1.3em;
+.popup-title {
+	margin-bottom: 1em;
+	font-size: 1.1em;
+}
+@media screen and (min-width: 600px) {
+	.popup-title {
+		margin-bottom: 1.5em;
+		font-size: 1.3em;
+	}
 }
 .bus-time {
-	display: inline-block;
-	width: 9em;
-	font-size: 1.1em;
-	font-weight: 600;
+	-webkit-flex-basis: 3em;
+	font-weight: 400;
+}
+.bus-line-container {
+	-webkit-flex-grow: 2;
+	flex-grow: 2;
+	padding: 0 0.4em 0 1em;
+	margin: 0 0.2em;
+	text-align: center;
+	color: #666;
+	font-size: 0.8em;
+
+	/* dotted underline */
+	border-bottom: 2px dotted #aaa;
+	-webkit-transform: translateY(2em);
+	transform: translateY(-0.4em);
 }
 .bus-line {
-	display: inline-block;
-	width: 2em;
-	font-size: 1.1em;
 	font-weight: 600;
-	margin-right: 0.2em;
 }
-
-.line-name {}
-
+.bus-line-endstation {
+	-webkit-flex-basis: 3em;
+	flex-basis: 3em;
+	margin-left: 0.4em;
+	font-weight: 400;
+}
+.destin-time {
+	display: inline-block;
+}
+.ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
 /* HACKS */
 

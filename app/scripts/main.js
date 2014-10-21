@@ -39,8 +39,7 @@ function onBusstopClickSelectDestin(el) {
 function onBusstopClickUnselectDestin(el) {
 	console.log("Unselected Destination");
 	console.log(el);
-	var id = el.target.options.title;
-	switchToDestin(id);
+	switchToDestin();
 }
 
 // Second click: Select departure
@@ -124,16 +123,26 @@ function writeStationBoard(data, id) {
 	console.log(data);
 	var depTime = new Array();
 	$("#popup").empty();
-	$("<h2 class='station-title' id='popup-title'> <span class='blue'>" + data[0].stationname.split(" - ")[0] + "</span> → <span class='red'>" + arrival.split("-")[0] + "</span></h2>").appendTo("#popup");
+
+	$("<h2 class='popup-title' id='popup-title'> <span class='blue depart'>" + chooseStationName(data[0].stationname) + "</span> <span class='arrow'>&#9654</span> <span class='red destin'>" + arrival.split("-")[0] + "</span></h2>").appendTo("#popup");
 
 	for (var i = 0; i < data.length && i < 5; i++) {
 		var tmpTime = data[i].arrival;
-
-		console.log(tmpTime + " #####");
 		tmpTime = moment(tmpTime, "hhmmss").endOf().fromNow();
+		tmpTime = tmpTime.replace("minutes", "min");
+		tmpTime = tmpTime.replace("minute", "min");
+		tmpTime = tmpTime.replace("in a few seconds", "now");
+		tmpTime = tmpTime.replace("a few seconds ago", "now");
 		//var line = data.busTripStops[i].busTrip.busLineId;
-		$("	<section class='arriving-bus'><div class='bus-time'>" + tmpTime +
-				"</div><span class='bus-line'>" + data[i].lidname + "</span></section>").appendTo("#popup");
+
+		$("	<section class='arriving-bus'>" +
+					"<span class='bus-time ellipsis'>" + tmpTime + "</span>" +
+					"<span class='bus-line-container ellipsis'>" +
+						"<span class='bus-line'>" + data[i].lidname + "</span>" +
+						"<span class='bus-line-endstation'>" + chooseStationName(data[i].last_station) + "</span>" +
+					"</span>" +
+					"<span class='destin-time'>" + "09:3" + (i*2)%10 + "</span>" +
+				"</section>").appendTo("#popup");
 	}
 }
 
@@ -315,6 +324,14 @@ function removeClickDelay() {
 
 function callback(data) {
 	console.log(data);
+}
+
+function chooseStationName(string) {
+	first = string.split("-")[0];
+	second = string.split("-")[1];
+
+	if (first.length > 3) return first;
+	else return second;
 }
 
 /*
