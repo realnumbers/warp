@@ -225,11 +225,10 @@ body {
 	width: 6em;
 	margin: 3em auto;
 }
-
 .arrow {
-	font-size: 0.7em;
-	vertical-align: 0.2em;
+	height: 0.6em;
 	margin: 0 0.6em;
+	vertical-align: 0em;
 }
 .triangle {
 	position: absolute;
@@ -295,9 +294,6 @@ body {
 
 .leaflet-control, .leaflet-control-attribution {
 	display: none;
-}
-#msg-depart {
-	margin-top: -2.95em;
 }
 * {
 	box-shadow: none !important;

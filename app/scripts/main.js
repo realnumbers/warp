@@ -30,16 +30,30 @@ showBusstopMap();
 // First click: Select destination
 function onBusstopClickSelectDestin(el) {
   console.log("Selected Destination");
-  console.log(el);
   var id = el.target.options.title;
   switchToDepart(id);
+}
+
+function switchToDepart(id) {
+	$("#msg-depart").show(0);
+	hideDestinMsg();
+	showDepartMsg();
+	markerGroup.clearLayers();
+	drawLine(id);
 }
 
 // Second click: Unselect destination
 function onBusstopClickUnselectDestin(el) {
 	console.log("Unselected Destination");
-	console.log(el);
 	switchToDestin();
+}
+
+function switchToDestin() {
+	$("#msg-destin").show(0);
+	hideDestinMsg();
+	showDepartMsg();
+	markerGroup.clearLayers();
+	showBusstopMap();
 }
 
 // Second click: Select departure
@@ -122,9 +136,15 @@ function drawLine(id) {
 function writeStationBoard(data, id) {
 	console.log(data);
 	var depTime = new Array();
+	var departName = data[0].stationname;
+	console.log(data[0]);
 	$("#popup").empty();
 
-	$("<h2 class='popup-title' id='popup-title'> <span class='blue depart'>" + chooseStationName(data[0].stationname) + "</span> <span class='arrow'>&#9654</span> <span class='red destin'>" + arrival.split("-")[0] + "</span></h2>").appendTo("#popup");
+	$("<h2 class='popup-title' id='popup-title'>" +
+			"<span class='blue depart'>" + chooseStationName(departName) + "</span>" +
+			"<img class='arrow' src='images/arrow.svg'>" +
+			"<span class='red destin'>" + chooseStationName(arrival) +"</span>" +
+		"</h2>").appendTo("#popup");
 
 	for (var i = 0; i < data.length && i < 5; i++) {
 		var tmpTime = data[i].arrival;
@@ -144,22 +164,6 @@ function writeStationBoard(data, id) {
 					"<span class='destin-time'>" + "09:3" + (i*2)%10 + "</span>" +
 				"</section>").appendTo("#popup");
 	}
-}
-
-function switchToDepart(id) {
-	$("#msg-depart").show(0);
-	hideDestinMsg();
-	showDepartMsg();
-	markerGroup.clearLayers();
-	drawLine(id);
-}
-
-function switchToDestin() {
-	$("#msg-destin").show(0);
-	hideDestinMsg();
-	showDepartMsg();
-	markerGroup.clearLayers();
-	showBusstopMap();
 }
 
 // DATA FUNCTIONS
@@ -278,16 +282,19 @@ function showDestinMsg() {
 }
 function hideDestinMsg() {
 	console.log("hide destination msg");
+	$("#msg-destin").hide();
 	$("#msg-destin").removeClass("zero").addClass("left");
 }
 
 function showDepartMsg() {
 	console.log("show departure msg")
-		$("#msg-depart").removeClass("right").addClass("zero");
+	$("#msg-depart").removeClass("right").addClass("zero");
+
 }
 function hideDepartMsg() {
 	console.log("hide departure msg")
-		$("#msg-depart").removeClass("zero").addClass("right");
+	$("#msg-depart").hide();
+	$("#msg-depart").removeClass("zero").addClass("right");
 }
 
 function showMenu() {
@@ -326,12 +333,18 @@ function callback(data) {
 	console.log(data);
 }
 
-function chooseStationName(string) {
-	first = string.split("-")[0];
-	second = string.split("-")[1];
+function chooseStationName(str) {
+	first = str.split("-")[0];
+	second = str.split("-")[1];
 
-	if (first.length > 3) return first;
-	else return second;
+	if (first.length > 3) return removeSpaces(first);
+	else return removeSpaces(second);
+}
+
+function removeSpaces(str) {
+	if (str[0] === " ") str = str.slice(1, str.length);
+	if (str[str.length - 1] === " ") str = str.slice(0, str.length - 1);
+	return str;
 }
 
 /*
