@@ -55,12 +55,29 @@
 		<p>This application is <a href="http://www.gnu.org/philosophy/free-sw">Free Software</a> and subject to the terms of the <a href="http://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License</a>. Get the code on <a href="https://github.com/realnumbers/bus-now">Github</a>.</p>
 	</section>
 
+	<div class="view darken favs" onClick="blurForeground()">
+		<article class="foreground-widget fav-container">
+			<div class="fav-text ellipsis">
+				<span class="fav-depart">Passaggio Tobagi</span>
+				<img class="fav-arrow" src="images/arrow.svg">
+				<span class="fav-destin">Via Ospedale</span>
+			</div>
+			<img class="btn fav-delete" src="images/x.svg">
+		</article>
+		<article class="foreground-widget fav-container">
+			<div class="fav-text ellipsis">
+				<span class="fav-depart">Piazza Università</span>
+				<img class="fav-arrow" src="images/arrow.svg">
+				<span class="fav-destin">Scuola Pestalozzi</span>
+			</div>
+			<img class="btn fav-delete" src="images/x.svg">
+		</article>
+	</div>
+
 	<div class="view darken hidden" onClick="blurForeground()">
-		<section class="popup hidden" id="popup">
+		<section class="popup foreground-widget hidden" id="popup">
 
 		</section>
-
-
 <!--
 		<section class="popup" id="popup">
 
