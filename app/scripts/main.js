@@ -5,6 +5,7 @@
 
 var coord = new Array();
 var arrival;
+var destStationBoard;
 coord = [46.4928, 11.331];
 currentPosition();
 // TIS: 46.4838, 11.336
@@ -108,10 +109,8 @@ function drawPositon(coord) {
 }
 
 // Draw all busstops connected to the chosen destination
-function drawLine() {
+function drawLine(list) {
 	var markerColor = "#29b1ff";
-	var list = getBusstopList();
-	calcLines
 	var coordBusstop = new Array ();
 	coordBusstop[0] = parseFloat(list[i].busstops[0].ORT_POS_BREITE);
 	coordBusstop[1] = parseFloat(list[i].busstops[0].ORT_POS_LAENGE);
@@ -128,15 +127,35 @@ function drawLine() {
 }
 
 //calculats witch Busstops will be drawn
-function calcLines(data) {
-	console.log(data);
+function destSuccess(data) {
 	console.log("ready");
-	//drawLine();
+	if (data.length > 0)
+	calcLine(getLineStops(), data);
+	else
+		alert("No Busses");
+}
+
+function calcLine(allLines, lines) {
+	var list = new Array();
+	var j;
+			console.log(lines);
+	for (var i = 0; i < lines.length; i++) {
+			j = 0;
+			while (j < allLines.length && lines[i].lidname != allLines[j].LI_NR){
+				j++;
+			}
+			if (allLines.length != j){
+			console.log(allLines[j]);
+			list = $.merge(list, allLines[j].varlist[0].routelist);
+			}
+	}
+	console.log(list);
+	//drawLine(list);
 }
 
 function loadDestinationStationBoard(id) {
 	var urlAPI = "http://stationboard.opensasa.info/?ORT_NR="+ id + "&type=jsonp";
-	request(urlAPI, calcLines, "JSONP");
+	request(urlAPI, destSuccess, "JSONP");
 }
 
 function writeStationBoard(data) {
@@ -192,6 +211,9 @@ function getBusstopList() {
 	return JSON.parse(localStorage.busstops);
 }
 
+function getLineStops() {
+	return JSON.parse(localStorage.line);
+}
 function UILang() {
 	if (navigator.language.substr(0, 2) == "de")
 		return "de";
@@ -223,16 +245,32 @@ function loadBusstopsList() {
 		request(apiUrl, busstopsSuccess, "jsonp");
 	}
 	else
-		showBusstopMap();
+		loadLineStops();
 }
 
 function busstopsSuccess(data) {
 	localStorage.setItem('busstops', JSON.stringify(data));
 	console.log("Data");
 	console.log(data);
-	showBusstopMap();
+	loadLineStops();
 }
 
+function loadLineStops() {
+	console.log("Start Request");
+	if (!localStorage.line) {
+		console.log("New Data");
+		var apiUrl = "http://opensasa.info/SASAplandata/?type=LID_VERLAUF";
+		request(apiUrl, lineSuccess, "jsonp");
+	}
+	else
+		showBusstopMap();
+}
+function lineSuccess(data) {
+	localStorage.setItem('line', JSON.stringify(data));
+	console.log("Data");
+	showBusstopMap();
+
+}
 // MESSAGES & POPUP
 
 function showDestinMsg() {
