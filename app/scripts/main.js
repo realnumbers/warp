@@ -137,20 +137,40 @@ function destSuccess(data) {
 
 function calcLine(allLines, lines) {
 	var list = new Array();
+	var stops = getBusstopList();
 	var j;
-			console.log(lines);
+	var x, y;
 	for (var i = 0; i < lines.length; i++) {
 			j = 0;
-			while (j < allLines.length && lines[i].lidname != allLines[j].LI_NR){
+			while (j < allLines.length && "1"+lines[i].lidname != allLines[j].LI_NR){
 				j++;
 			}
 			if (allLines.length != j){
-			console.log(allLines[j]);
 			list = $.merge(list, allLines[j].varlist[0].routelist);
 			}
 	}
+	for (var i = 0; i < list.length; i++) {
+		j = 0;
+		while (j < stops.length &&
+			 (stops[j].busstops[0] != list[i]) && 
+			 (stops.length > 0 && stops[j].busstops[0] != list[i]))
+			j++;
+			if (stops.length != j){
+				list[i] = new Object();
+				if (stops[j].busstops[0] == list[i]) {
+					list[i].x = stops[j].busstops[0].ORT_POS_BREITE
+					list[i].y = stops[j].busstops[0].ORT_POS_LAENGE
+				}
+				else {
+					list[i].x = stops[j].busstops[1].ORT_POS_BREITE
+					list[i].y = stops[j].busstops[1].ORT_POS_LAENGE
+				}
+				}
+	
+	}
 	console.log(list);
 	//drawLine(list);
+
 }
 
 function loadDestinationStationBoard(id) {
