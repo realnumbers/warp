@@ -4,8 +4,9 @@
 // LOAD BUSSTOPS FROM FILE AND RENDER MAP
 
 var coord = new Array();
-var arrival;
+var depId;
 var destStationBoard;
+var arrival = "";
 coord = [46.4928, 11.331];
 currentPosition();
 // TIS: 46.4838, 11.336
@@ -30,7 +31,7 @@ loadBusstopsList();
 function onBusstopClickSelectDestin(el) {
 	console.log("Selected Destination");
 	console.log(el);
-	var id = el.target.options.title;
+	var id = el.target.options.stopId;
 	switchToDepart(id);
 }
 
@@ -45,8 +46,7 @@ function onBusstopClickUnselectDestin(el) {
 function onBusstopClickDep(el) {
 	console.log("Selected Arr");
 	console.log(el);
-	var id = el.target.options.title;
-
+	var stopId = el.target.options.stopId;
 	// Add Spinner to bubble
 	$("#popup").empty();
 	$("<div class='spinner-container'><img class='spinner' src='images/spinner.svg'></div>").appendTo("#popup");
@@ -58,7 +58,7 @@ function onBusstopClickDep(el) {
 	$(".popup").removeClass("hidden");
 	$(".info-bubble").addClass("hidden");
 
-	getDepBusstop(id);
+	loadStationBoard(stopId);
 }
 
 // UI RENDERING FUNCTIONS
@@ -67,38 +67,20 @@ function onBusstopClickDep(el) {
 function showBusstopMap(slide) {
 	//red #ff0101
 	//blue #318eff
-	var i = 0;
-	var lang = UILang();
 	var list = getBusstopList();
-	var markerColor = (slide == "arr") ? "#29b1ff" : "#ff3101";
-	for (i = 0; i < list.length; i++) {
-		var coordBusstop = new Array();
-		coordBusstop[0] = parseFloat(list[i].busstops[0].ORT_POS_BREITE);
-		coordBusstop[1] = parseFloat(list[i].busstops[0].ORT_POS_LAENGE);
+	for (var i = 0; i < list.length; i++) {
+		var coord = new Array();
+		coord[0] = parseFloat(list[i].busstops[0].ORT_POS_BREITE);
+		coord[1] = parseFloat(list[i].busstops[0].ORT_POS_LAENGE);
 		var id = list[i].busstops[0].ORT_NR;
-		L.circleMarker(coordBusstop,
-				{
-opacity : 1,
-radius : 10,
-color : markerColor,
-fillOpacity : 1,
-title : id
-}).addTo(markerGroup).on('click', onBusstopClickSelectDestin);
-
-if (list[i].busstops[1] != undefined) {
-	coordBusstop[0] = parseFloat(list[i].busstops[1].ORT_POS_BREITE);
-	coordBusstop[1] = parseFloat(list[i].busstops[1].ORT_POS_LAENGE);
-	id = list[i].busstops[1].ORT_NR;
-	L.circleMarker(coordBusstop,
-			{
-opacity : 1,
-radius : 10,
-color : markerColor,
-fillOpacity : 1,
-title : id
-}).addTo(markerGroup).on('click', onBusstopClickSelectDestin);
-}
-}
+		drawStop(id, coord, "#ff0101", onBusstopClickSelectDestin);
+		if (list[i].busstops[1] != undefined) {
+			coord[0] = parseFloat(list[i].busstops[1].ORT_POS_BREITE);
+			coord[1] = parseFloat(list[i].busstops[1].ORT_POS_LAENGE);
+			id = list[i].busstops[1].ORT_NR;
+			drawStop(id, coord, "#ff0101", onBusstopClickSelectDestin);
+		}
+	}
 }
 
 // Draw user position
@@ -109,28 +91,44 @@ function drawPositon(coord) {
 }
 
 // Draw all busstops connected to the chosen destination
-function drawLine(list) {
-	var markerColor = "#29b1ff";
-	var coordBusstop = new Array ();
-	coordBusstop[0] = parseFloat(list[i].busstops[0].ORT_POS_BREITE);
-	coordBusstop[1] = parseFloat(list[i].busstops[0].ORT_POS_LAENGE);
+function drawLine(line) {
+	var stops = getBusstopList();
+	// busstip color
+	//markerColor = "#29b1ff";
+	//selected Bussops color
+	//markerColor = "#ff3101";
+	//callback = onBusstopClickUnselectDestin
+	var coord = new Array ();
+	for (var i = 0; i < stops.length; i++) {
+		if (line[0] === stops[i].busstops[0].ORT_NR) {
+			coord[0] = parseFloat(stops[i].busstops[0].ORT_POS_BREITE);
+			coord[1] = parseFloat(stops[i].busstops[0].ORT_POS_LAENGE);
+			var id = parseFloat(stops[i].busstops[0].ORT_NR);
+			drawStop(id, coord, "#29b1ff", onBusstopClickDep);
+		}
+		if (stops[i].busstops[1] != undefined && line[0] === stops[i].busstops[1].ORT_NR) {
+			var id = parseFloat(stops[i].busstops[1].ORT_NR);
+			coord[0] = parseFloat(stops[i].busstops[1].ORT_POS_BREITE);
+			coord[1] = parseFloat(stops[i].busstops[1].ORT_POS_LAENGE);
+			drawStop(id, coord, "#29b1ff", onBusstopClickDep);
+		}
+	}
+	//remove first element in list
+	line.splice(0, 1);
+	if(line.length > 0)
+		drawLine(line);
+}
 
-	if (busstopList[j].id == id) {
-		arrival = busstopList[j].name;
-		markerColor = "#ff3101";
-		L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickUnselectDestin);
-	}
-	else {
-		markerColor = "#29b1ff";
-		L.circleMarker(coordBusstop, {opacity : 1, radius : 10, color : markerColor, fillOpacity : 1, title : busstopList[j].id}).addTo(markerGroup).on('click', onBusstopClickDep);
-	}
+function drawStop(id, coord, markerColor, callback) {
+	L.circleMarker(coord, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, stopId : id}).addTo(markerGroup).on('click', callback);
 }
 
 //calculats witch Busstops will be drawn
 function destSuccess(data) {
 	console.log("ready");
+	arrival = data[0].stationname;
 	if (data.length > 0)
-	calcLine(getLineStops(), data);
+		calcLine(getLineStops(), data);
 	else
 		alert("No Busses");
 }
@@ -141,35 +139,36 @@ function calcLine(allLines, lines) {
 	var j;
 	var x, y;
 	for (var i = 0; i < lines.length; i++) {
-			j = 0;
-			while (j < allLines.length && "1"+lines[i].lidname != allLines[j].LI_NR){
-				j++;
-			}
-			if (allLines.length != j){
+		j = 0;
+		while (j < allLines.length && lines[i].lidname != allLines[j].LIDNAME){
+			j++;
+		}
+		if (allLines.length != j){
+			console.log("Merge");
 			list = $.merge(list, allLines[j].varlist[0].routelist);
-			}
+		}
 	}
 	for (var i = 0; i < list.length; i++) {
 		j = 0;
 		while (j < stops.length &&
-			 (stops[j].busstops[0] != list[i]) && 
-			 (stops.length > 0 && stops[j].busstops[0] != list[i]))
+				(stops[j].busstops[0] != list[i]) && 
+				(stops.length > 0 && stops[j].busstops[0] != list[i]))
 			j++;
-			if (stops.length != j){
-				list[i] = new Object();
-				if (stops[j].busstops[0] == list[i]) {
-					list[i].x = stops[j].busstops[0].ORT_POS_BREITE
+		if (stops.length != j){
+			list[i] = new Object();
+			if (stops[j].busstops[0] == list[i]) {
+				list[i].x = stops[j].busstops[0].ORT_POS_BREITE
 					list[i].y = stops[j].busstops[0].ORT_POS_LAENGE
-				}
-				else {
-					list[i].x = stops[j].busstops[1].ORT_POS_BREITE
+			}
+			else {
+				list[i].x = stops[j].busstops[1].ORT_POS_BREITE
 					list[i].y = stops[j].busstops[1].ORT_POS_LAENGE
-				}
+			}
 				}
 	
 	}
 	console.log(list);
-	//drawLine(list);
+	drawLine(list);
 
 }
 
@@ -275,6 +274,21 @@ function busstopsSuccess(data) {
 	loadLineStops();
 }
 
+function loadLineInfo() {
+	var apiUrl = "http://opensasa.info/SASAplandata/?type=REC_LID";
+	request(apiUrl, infoSuccess, "jsonp");
+}
+
+function infoSuccess(info) {
+	var lineList = getLineStops();
+	for (var i = 0; i < info.length; i++) {
+		lineList[i].LIDNAME = info[i].LIDNAME;
+		lineList[i].LI_KUERZEL = info[i].LI_KUERZEL;
+	}
+	localStorage.setItem('line', JSON.stringify(lineList));
+	showBusstopMap();
+}
+
 function loadLineStops() {
 	console.log("Start Request");
 	if (!localStorage.line) {
@@ -288,8 +302,7 @@ function loadLineStops() {
 function lineSuccess(data) {
 	localStorage.setItem('line', JSON.stringify(data));
 	console.log("Data");
-	showBusstopMap();
-
+	loadLineInfo();
 }
 // MESSAGES & POPUP
 
