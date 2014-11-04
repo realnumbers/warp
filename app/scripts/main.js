@@ -234,8 +234,21 @@ function loadBusstopsList() {
 		var apiUrl = "http://opensasa.info/SASAplandata/?type=REC_ORT";
 		request(apiUrl, busstopsSuccess, "jsonp");
 	}
-	else
+	else {
+    var apiUrl = "http://opensasa.info/SASAplandata/?type=BASIS_VER_GUELTIGKEIT";
+		request(apiUrl, validitySuccess, "jsonp");
+  }
+}
+
+function validitySuccess(data) {
+  if (localStorage.version == data[0].VER_GUELTIGKEIT)
 		loadLineStops();
+  else {
+    localStorage.clear();
+    localStorage.version = data[0].VER_GUELTIGKEIT;
+    loadBusstopsList();
+  }
+
 }
 
 function busstopsSuccess(data) {
