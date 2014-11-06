@@ -104,15 +104,14 @@ function drawPositon(coord) {
 }
 
 // Draw all busstops connected to the chosen destination
-function drawLine(destID, line) {
-	var stops = getBusstopList();
+function drawLine(destID, stops, line, index) {
 	// busstip color
 	//markerColor = "#29b1ff";
 	//selected Bussops color
 	//markerColor = "#ff3101";
 	var coord = new Array ();
 	for (var i = 0; i < stops.length; i++) {
-		if (line[0] === stops[i].busstops[0].ORT_NR) {
+		if (line[index] === stops[i].busstops[0].ORT_NR) {
 			coord[0] = parseFloat(stops[i].busstops[0].ORT_POS_BREITE);
 			coord[1] = parseFloat(stops[i].busstops[0].ORT_POS_LAENGE);
 			var id = parseFloat(stops[i].busstops[0].ORT_NR);
@@ -124,7 +123,7 @@ function drawLine(destID, line) {
 				drawStop(id, coord, "#29b1ff", onBusstopClickDep);
 
 		}
-		if (stops[i].busstops[1] != undefined && line[0] === stops[i].busstops[1].ORT_NR) {
+		if (stops[i].busstops[1] != undefined && line[index] === stops[i].busstops[1].ORT_NR) {
 			var id = parseFloat(stops[i].busstops[1].ORT_NR);
 			coord[0] = parseFloat(stops[i].busstops[1].ORT_POS_BREITE);
 			coord[1] = parseFloat(stops[i].busstops[1].ORT_POS_LAENGE);
@@ -137,9 +136,9 @@ function drawLine(destID, line) {
 		}
 	}
 	//remove first element in list
-	line.splice(0, 1);
-	if(line.length > 0)
-		drawLine(destID, line);
+//	line.splice(0, 1);
+	if(index < line.length)
+		drawLine(destID, stops, line, index + 1);
 }
 
 function drawStop(id, coord, markerColor, callback) {
@@ -148,6 +147,7 @@ function drawStop(id, coord, markerColor, callback) {
 
 function calcLine(id, lines) {
 	var list = new Array();
+	var stops = getBusstopList();
 	console.log("Start calc");
 	for (var i = 0; i < lines.length; i++) {
 		//varients
@@ -160,7 +160,7 @@ function calcLine(id, lines) {
 				}
 		}
 	}
-	drawLine(id, list);
+	drawLine(id, stops, list, 0);
 }
 
 function writeStationBoard(data) {
