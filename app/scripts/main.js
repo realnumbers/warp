@@ -3,35 +3,34 @@
 
 // LOAD BUSSTOPS FROM FILE AND RENDER MAP
 
-loadBusstopsList();
-loadBusstopsListPair();
 var coord = new Array();
-var arrival;
+var arrival = "";
 coord = [46.4928, 11.331];
 currentPosition();
-	// TIS: 46.4838, 11.336
-	/* create leaflet map */
-	var map = L.map('map', {
-		center: coord, // y, x
-		zoom: 16
-	});
+// TIS: 46.4838, 11.336
+/* create leaflet map */
+var map = L.map('map', {
+center: coord, // y, x
+zoom: 16
+});
 
 /* add default stamen tile layer */
 L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
-	minZoom: 12,
-	maxZoom: 18,
-	attribution: 'Map data © <a href="http://www.openstreetmap.org">OpenStreetMap contributors</a>'
+minZoom: 12,
+maxZoom: 18,
+attribution: 'Map data © <a href="http://www.openstreetmap.org">OpenStreetMap contributors</a>'
 }).addTo(map);
 var markerGroup = new L.LayerGroup().addTo(map);
-showBusstopMap();
 
+loadBusstopsList();
 // MAP USER INTERACTIONS
 
 // First click: Select destination
 function onBusstopClickSelectDestin(el) {
-  console.log("Selected Destination");
-  var id = el.target.options.title;
-  switchToDepart(id);
+	console.log("Selected Destination");
+	console.log(el);
+	var id = el.target.options.stopId;
+	switchToDepart(id);
 }
 
 function switchToDepart(id) {
@@ -60,8 +59,7 @@ function switchToDestin() {
 function onBusstopClickDep(el) {
 	console.log("Selected Arr");
 	console.log(el);
-	var id = el.target.options.title;
-
+	var stopId = el.target.options.stopId;
 	// Add Spinner to bubble
 	$("#popup").empty();
 	$("<div class='spinner-container'><img class='spinner' src='images/spinner.svg'></div>").appendTo("#popup");
@@ -73,67 +71,99 @@ function onBusstopClickDep(el) {
 	$(".popup").removeClass("hidden");
 	$(".info-bubble").addClass("hidden");
 
-  getDepBusstop(id);
+	loadStationBoard(stopId);
 }
 
 // UI RENDERING FUNCTIONS
 
 // Draw all busstops
 function showBusstopMap(slide) {
-	var i = 0;
-	var lang = UILang();
-	var busstopList = getBusstopList();
-	var markerColor = (slide == "arr") ? "#29b1ff" : "#ff3101";
-	for (i = 0; i < busstopList[lang].length; i++) {
-		var coordBusstop = new Array();
-		coordBusstop[0] = parseFloat(busstopList[lang][i].x);
-		coordBusstop[1] = parseFloat(busstopList[lang][i].y);
-		var thisLine = busstopList[lang][i].line;
-		var id = busstopList[lang][i].id;
-		//red #ff0101
-		//blue #318eff
-		L.circleMarker(coordBusstop, {opacity : 1, radius : 10, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickSelectDestin);
+	//red #ff0101
+	//blue #318eff
+	var list = getBusstopList();
+	for (var i = 0; i < list.length; i++) {
+		var coord = new Array();
+		coord[0] = parseFloat(list[i].busstops[0].ORT_POS_BREITE);
+		coord[1] = parseFloat(list[i].busstops[0].ORT_POS_LAENGE);
+		var id = list[i].busstops[0].ORT_NR;
+		drawStop(id, coord, "#ff0101", onBusstopClickSelectDestin);
+		if (list[i].busstops[1] != undefined) {
+			coord[0] = parseFloat(list[i].busstops[1].ORT_POS_BREITE);
+			coord[1] = parseFloat(list[i].busstops[1].ORT_POS_LAENGE);
+			id = list[i].busstops[1].ORT_NR;
+			drawStop(id, coord, "#ff0101", onBusstopClickSelectDestin);
+		}
 	}
 }
 
 // Draw user position
 function drawPositon(coord) {
-  var markerColor = "#00ff00";
-  var curr_pos = L.circleMarker(coord, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : "Hello"}).addTo(markerGroup);
-  map.fitBounds(curr_pos.getBounds());
+	var markerColor = "#00ff00";
+	var curr_pos = L.circleMarker(coord, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : "Hello"}).addTo(markerGroup);
+	map.fitBounds(curr_pos.getBounds());
 }
 
 // Draw all busstops connected to the chosen destination
-function drawLine(id) {
-  var markerColor = "#29b1ff";
-  var busstopList = getBusstopList()[UILang()];
-  var el = getBusstopById(id);
-  var coordBusstop = new Array ();
-  for ( var i = 0; i < el.line.length; i++ ) {
-    for ( var j = 0; j < busstopList.length; j++) {
-      for ( var k = 0; k < busstopList[j].line.length; k++) {
-        if ( el.line[i] == busstopList[j].line[k] ) {
-          coordBusstop[0] = parseFloat(busstopList[j].x);
-          coordBusstop[1] = parseFloat(busstopList[j].y);
+function drawLine(destID, line) {
+	var stops = getBusstopList();
+	// busstip color
+	//markerColor = "#29b1ff";
+	//selected Bussops color
+	//markerColor = "#ff3101";
+	var coord = new Array ();
+	for (var i = 0; i < stops.length; i++) {
+		if (line[0] === stops[i].busstops[0].ORT_NR) {
+			coord[0] = parseFloat(stops[i].busstops[0].ORT_POS_BREITE);
+			coord[1] = parseFloat(stops[i].busstops[0].ORT_POS_LAENGE);
+			var id = parseFloat(stops[i].busstops[0].ORT_NR);
+			if (destID === id) {
+				arrival = stops[i].ORT_NAME;
+				drawStop(id, coord, "#ff3101", onBusstopClickUnselectDestin);
+			}
+			else
+				drawStop(id, coord, "#29b1ff", onBusstopClickDep);
 
-          if (busstopList[j].id == id) {
-            arrival = busstopList[j].name;
-            markerColor = "#ff3101";
-            L.circleMarker(coordBusstop, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, title : id}).addTo(markerGroup).on('click', onBusstopClickUnselectDestin);
-          }
-          else {
-            markerColor = "#29b1ff";
-
-            L.circleMarker(coordBusstop, {opacity : 1, radius : 10, color : markerColor, fillOpacity : 1, title : busstopList[j].id}).addTo(markerGroup).on('click', onBusstopClickDep);
-          }
-
-        }
-      }
-    }
-  }
+		}
+		if (stops[i].busstops[1] != undefined && line[0] === stops[i].busstops[1].ORT_NR) {
+			var id = parseFloat(stops[i].busstops[1].ORT_NR);
+			coord[0] = parseFloat(stops[i].busstops[1].ORT_POS_BREITE);
+			coord[1] = parseFloat(stops[i].busstops[1].ORT_POS_LAENGE);
+			if (destID === id) {
+				arrival = stops[i].ORT_NAME;
+				drawStop(id, coord, "#ff3101", onBusstopClickUnselectDestin);
+			}
+			else
+				drawStop(id, coord, "#29b1ff", onBusstopClickDep);
+		}
+	}
+	//remove first element in list
+	line.splice(0, 1);
+	if(line.length > 0)
+		drawLine(destID, line);
 }
 
-function writeStationBoard(data, id) {
+function drawStop(id, coord, markerColor, callback) {
+	L.circleMarker(coord, {opacity : 1, radius : 15, color : markerColor, fillOpacity : 1, stopId : id}).addTo(markerGroup).on('click', callback);
+}
+
+function calcLine(id, lines) {
+	var list = new Array();
+	console.log("Start calc");
+	for (var i = 0; i < lines.length; i++) {
+		//varients
+		for (var j = 0; j < lines[i].varlist.length; j++) {
+			for (var k = 0; k < lines[i].varlist[j].routelist.length && lines[i].varlist[j].routelist[k] != id; k++);
+				if (lines[i].varlist[j].routelist[k] === id) {
+					console.log("Merge");
+					//lines[i].varlist[j].routelist.splice(0, k);
+					list = $.merge(list, lines[i].varlist[j].routelist);
+				}
+		}
+	}
+	drawLine(id, list);
+}
+
+function writeStationBoard(data) {
 	console.log(data);
 	var depTime = new Array();
 	var departName = data[0].stationname;
@@ -156,84 +186,45 @@ function writeStationBoard(data, id) {
 		//var line = data.busTripStops[i].busTrip.busLineId;
 
 		$("	<section class='arriving-bus'>" +
-					"<span class='bus-time ellipsis'>" + tmpTime + "</span>" +
-					"<span class='bus-line-container ellipsis'>" +
-						"<span class='bus-line'>" + data[i].lidname + "</span>" +
-						"<span class='bus-line-endstation'>" + chooseStationName(data[i].last_station) + "</span>" +
-					"</span>" +
-					"<span class='destin-time'>" + "09:3" + (i*2)%10 + "</span>" +
+				"<span class='bus-time ellipsis'>" + tmpTime + "</span>" +
+				"<span class='bus-line-container ellipsis'>" +
+				"<span class='bus-line'>" + data[i].lidname + "</span>" +
+				"<span class='bus-line-endstation'>" + chooseStationName(data[i].last_station) + "</span>" +
+				"</span>" +
+				"<span class='destin-time'>" + "09:3" + (i*2)%10 + "</span>" +
 				"</section>").appendTo("#popup");
 	}
 }
 
-// DATA FUNCTIONS
-
-function getBusstopById(id) {
-  var busstopList = getBusstopList()[UILang()];
-  var found = false;
-  var i = 0;
-  while (found == false) {
-    if (busstopList[i].id == id)
-      found = true;
-    else
-      i++;
-  }
-  return busstopList[i];
+function switchToDepart(id) {
+	$("#msg-depart").show(0);
+	hideDestinMsg();
+	showDepartMsg();
+	markerGroup.clearLayers();
+	calcLine(id, getLineStops());
 }
 
-function matchBusstop(id) {
-  var lang = UILang();
-  var pair = getBusstopPair()[lang];
-  var busstops = getBusstopList()[lang];
-  var j;
-  var found = false;
-  j = 0;
-  found = false;
-  while (found == false && j < pair.length) {
-    var tmp = pair[j].id.split(":");
-    if (id == (":" + tmp[1] + ":") || id == (":" + tmp[2] + ":")) {
-      found = true;
-      console.log("found match");
-      id = pair[j].id;
-    }
-    j++;
-  }
-  return id;
+function switchToDestin() {
+	$("#msg-destin").show(0);
+	hideDestinMsg();
+	showDepartMsg();
+	markerGroup.clearLayers();
+	showBusstopMap();
 }
 
-function getDepBusstop(id) {  //http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId=:5142:&yyyymmddhhmm=201309160911&callback=function123
-  var idPair = matchBusstop(id);
-  var time = moment().format('YYYYMMDDhhmm');
-  //time = "201405131550";
-  //var urlAPI = "http://html5.sasabus.org/backend/sasabusdb/findBusStationDepartures?busStationId="+ idPair + "&yyyymmddhhmm=" + time;
-	id = id.split(":")[1];
-	console.log(id);
-	//var urlAPI = "http://sasa.sparber.net/stationboard?ORT_NR=" + id  + "&type=json";
+function loadStationBoard(id) {  
 	var urlAPI = "http://stationboard.opensasa.info/?ORT_NR="+ id + "&type=jsonp";
-	console.log(urlAPI);
-  $.ajax({
-        url: urlAPI,
-        dataType: 'jsonp',
-				jsonp: 'JSONP',
-        success: function( data ) {
-          console.log("success");
-					writeStationBoard(data, id);
-          },
-        error: function( data ) {
-        console.log("Error");
-        }
-    });
-
+	request(urlAPI, writeStationBoard, "JSONP");
 }
 
 // Return the busstop list as json which is stored in the localStorage
 function getBusstopList() {
 	return JSON.parse(localStorage.busstops);
 }
-function getBusstopPair() {
-	return JSON.parse(localStorage.busstopsPair);
-}
 
+function getLineStops() {
+	return JSON.parse(localStorage.line);
+}
 function UILang() {
 	if (navigator.language.substr(0, 2) == "de")
 		return "de";
@@ -258,22 +249,66 @@ function currentPosition() {
 }
 
 function loadBusstopsList() {
+	console.log("Start Request");
 	if (!localStorage.busstops) {
-		$.getJSON("data/busstops.json", function (data) {
-				localStorage.setItem('busstops', JSON.stringify(data));
-				window.location.reload();
-				});
+		console.log("New Data");
+		var apiUrl = "http://opensasa.info/SASAplandata/?type=REC_ORT";
+		request(apiUrl, busstopsSuccess, "jsonp");
 	}
+	else {
+    var apiUrl = "http://opensasa.info/SASAplandata/?type=BASIS_VER_GUELTIGKEIT";
+		request(apiUrl, validitySuccess, "jsonp");
+  }
 }
 
-function loadBusstopsListPair() {
-	if (!localStorage.busstopsPair){
-		$.getJSON( "data/busstops_pair.json", function(data) {
-				localStorage.setItem('busstopsPair', JSON.stringify(data));
-				});
-	}
+function validitySuccess(data) {
+  if (localStorage.version == data[0].VER_GUELTIGKEIT)
+		loadLineStops();
+  else {
+    localStorage.clear();
+    localStorage.version = data[0].VER_GUELTIGKEIT;
+    loadBusstopsList();
+  }
+
 }
 
+function busstopsSuccess(data) {
+	localStorage.setItem('busstops', JSON.stringify(data));
+	console.log("Data");
+	console.log(data);
+	loadLineStops();
+}
+
+function loadLineInfo() {
+	var apiUrl = "http://opensasa.info/SASAplandata/?type=REC_LID";
+	request(apiUrl, infoSuccess, "jsonp");
+}
+
+function infoSuccess(info) {
+	var lineList = getLineStops();
+	for (var i = 0; i < info.length; i++) {
+		lineList[i].LIDNAME = info[i].LIDNAME;
+		lineList[i].LI_KUERZEL = info[i].LI_KUERZEL;
+	}
+	localStorage.setItem('line', JSON.stringify(lineList));
+	showBusstopMap();
+}
+
+function loadLineStops() {
+	console.log("Start Request");
+	if (!localStorage.line) {
+		console.log("New Data");
+		var apiUrl = "http://opensasa.info/SASAplandata/?type=LID_VERLAUF";
+		request(apiUrl, lineSuccess, "jsonp");
+	}
+	else
+		showBusstopMap();
+}
+function lineSuccess(data) {
+	localStorage.setItem('line', JSON.stringify(data));
+	console.log("Data");
+	loadLineInfo();
+}
 // MESSAGES & POPUP
 
 function showDestinMsg() {
@@ -328,9 +363,22 @@ function removeClickDelay() {
 			new FastClick(document.body);
 			}, false);
 }
+// ALL API REQUEST
 
-function callback(data) {
-	console.log(data);
+// callback is the name of the callback arg
+function request(urlAPI, success, callback) {
+	$.ajax({
+url: urlAPI,
+dataType: 'jsonp',
+jsonp: callback,
+success: function( data ) {
+console.log("success: " + urlAPI);
+success(data);
+},
+error: function( data ) {
+console.log("Error: " + urlAPI);
+}
+});
 }
 
 function chooseStationName(str) {
@@ -349,22 +397,22 @@ function removeSpaces(str) {
 
 /*
 	 function hideMsg() {
-	console.log("hide msg")
-	$(".ui").velocity({
-		scaleX: 1,
-		scaleY: 1,
-		opacity: 1,
-	});
-	$(".map-application").velocity({
-		opacity: 0.5,
-	});
-	$(".menu-btn").velocity({
-		colorRed: 255,
-		colorBlue: 255,
-		colorGreen: 255,
-	}, {
-		complete: function () {
-			$(".header-bar").removeClass("hidden").addClass("visible");
-		}
-	});
+	 console.log("hide msg")
+	 $(".ui").velocity({
+scaleX: 1,
+scaleY: 1,
+opacity: 1,
+});
+$(".map-application").velocity({
+opacity: 0.5,
+});
+$(".menu-btn").velocity({
+colorRed: 255,
+colorBlue: 255,
+colorGreen: 255,
+}, {
+complete: function () {
+$(".header-bar").removeClass("hidden").addClass("visible");
+}
+});
 }*/
